@@ -1,6 +1,6 @@
 from Simulation import Simulation
 
-simulation = Simulation(10, 12)
+simulation = Simulation(20)
 
 print('Opening simulation window...')
 

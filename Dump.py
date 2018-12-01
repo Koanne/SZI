@@ -1,3 +1,4 @@
+from tkinter import *
 from MapElement import MapElement
 
 class Dump(MapElement):
@@ -5,13 +6,13 @@ class Dump(MapElement):
         self.position = [x,y]
         self.type = type 
         if type == 'paper':
-            self.color = 'blue'
+            self.image = PhotoImage(file='paper.png')
         elif type == 'plastic':
-            self.color = 'yellow'
+            self.image = PhotoImage(file='plastic.png')
         elif type == 'glass':
-            self.color = 'green'
+            self.image = PhotoImage(file='glass.png')
         else:
-            self.color = 'brown'
+            self.image = PhotoImage(file='other.png')
 
     def action(self):
         pass
