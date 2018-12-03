@@ -7,6 +7,7 @@ from Grass import Grass
 from Dump import Dump
 from Bin import Bin
 from State import State
+from graphSearch import *
 import time
 
 class Simulation(object):
@@ -31,14 +32,13 @@ class Simulation(object):
         self.binsAmount = binsAmount
         self.window.title("Simulation")
         self.collector = Collector(1, 1, 2)
+        self.fringeBins = []
         self.mapElements = []
-        self.grassImage = PhotoImage(file='grass.png')
         self.addDumps()
         self.addRoads()
         self.addBins()
         self.addGrass()
-        self.collector.position = [1,1]
-    
+
     
     def addDumps(self):
         types = ['plastic', 'paper', 'glass', 'other']
