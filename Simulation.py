@@ -39,15 +39,15 @@ class Simulation(object):
         self.addBins()
         self.addGrass()
 
-    
+
     def addDumps(self):
         types = ['plastic', 'paper', 'glass', 'other']
         n = 0
         for j in types:
             new = Dump(n, 0, j)
-            n = n + 1 
+            n = n + 1
             self.mapElements.append(new)
-    
+
     def addRoad(self, position1, position2):
         if position1[0]==position2[0]:
             for i in range(position1[1], position2[1]+1):
@@ -79,7 +79,7 @@ class Simulation(object):
                     rightPosition = True
             element = Bin(x, y)
             self.positionsToVisit.append([x,y])
-            self.mapElements.append(element) 
+            self.mapElements.append(element)
 
     def addGrass(self):
         for i in range (0, self.gridWidth):
@@ -103,15 +103,25 @@ class Simulation(object):
         self.window.update_idletasks()
         self.window.update()
         time.sleep(1.5)
-    
+
     def start(self):
         while True:
             self.moveCollector()
 
-##################################################################### RUCH AGENTA 
+##################################################################### RUCH AGENTA
     def moveCollector(self):
         self.update()
         self.collector.turnLeft()
 
     def graphSearch(self):
         pass
+
+#####################################################################
+
+    def testGoal(self)
+        for i in self.positionsToVisit:
+            if (position[0] == self.collector.position[0] + 1) or (position[0] == self.collector.position[0] - 1):
+                return True
+            if (position[1] == self.collector.position[1] + 1) or (position[0] == self.collector.position[1] - 1):
+                return True
+        return False
