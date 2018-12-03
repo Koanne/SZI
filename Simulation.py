@@ -7,7 +7,6 @@ from Grass import Grass
 from Dump import Dump
 from Bin import Bin
 from State import State
-from graphSearch import *
 import time
 
 class Simulation(object):
@@ -32,6 +31,7 @@ class Simulation(object):
         self.binsAmount = binsAmount
         self.window.title("Simulation")
         self.collector = Collector(1, 1, 2)
+        self.positionsToVisit = []
         self.fringeBins = []
         self.mapElements = []
         self.addDumps()
@@ -78,6 +78,7 @@ class Simulation(object):
                 if self.checkIfPositionIsEmpty([x,y]):
                     rightPosition = True
             element = Bin(x, y)
+            self.positionsToVisit.append([x,y])
             self.mapElements.append(element) 
 
     def addGrass(self):
@@ -111,3 +112,6 @@ class Simulation(object):
     def moveCollector(self):
         self.update()
         self.collector.turnLeft()
+
+    def graphSearch(self):
+        pass

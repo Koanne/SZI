@@ -35,3 +35,6 @@ class Collector(MapElement):
             self.state.position[1] += 1
         else:
             self.state.position[0] += -1
+    
+    def doAction(self, action):
+        pass
