@@ -8,6 +8,7 @@ from Dump import Dump
 from Bin import Bin
 from State import State
 import time
+from PriorityQueue import PriorityQueue
 
 class Simulation(object):
 
@@ -114,4 +115,25 @@ class Simulation(object):
         self.collector.turnLeft()
 
     def graphSearch(self):
-        pass
+        actions = []
+        explored = []
+        startState.state = self.collector.state
+        startState.priority = 1
+        fringe = PriorityQueue()
+        fringe.insert(startState)
+
+        while not self.testGoal(currentState.state):
+            currentState = fringe.delete()
+            if self.testGoal(currentState):
+                return actions
+            explored.append(currentState)
+            for (action, nextState) in self.getSuccessors(elem.state):
+                x = nextState
+                x.action = action
+                x.parent = currentState
+                x.priority = self.getPriority(x)
+
+                if x.state not in explored and x.state not in fringe.queue:
+                    fringe.insert(x)
+                elif x in fringe.queue:
+                    pass
