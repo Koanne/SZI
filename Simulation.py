@@ -117,17 +117,17 @@ class Simulation(object):
     def graphSearch(self):
         actions = []
         explored = []
-        startState.state = self.collector.state
-        startState.priority = 1
+        currentState = self.collector.state
+        currentState.priority = 1
         fringe = PriorityQueue()
-        fringe.insert(startState)
+        fringe.insert(currentState)
 
-        while not self.testGoal(currentState.state):
+        while not self.testGoal(currentState):
             currentState = fringe.delete()
             if self.testGoal(currentState):
                 return actions
             explored.append(currentState)
-            for (action, nextState) in self.getSuccessors(elem.state):
+            for (action, nextState) in self.getSuccessors(currentState):
                 x = nextState
                 x.action = action
                 x.parent = currentState
@@ -141,13 +141,19 @@ class Simulation(object):
 
 #####################################################################
 
-    def testGoal(self)
-        for i in self.positionsToVisit:
-            if (position[0] == self.collector.state.position[0] + 1) or (position[0] == self.collector.state.position[0] - 1):
+    def testGoal(self, state):
+        for [x,y] in self.positionsToVisit:
+            if ((state.position[0] == x+1) or (state.position[0] == x-1)) and state.position[1]==y:
                 return True
-            if (position[1] == self.collector.state.position[1] + 1) or (position[0] == self.collector.state.position[1] - 1):
+            if ((state.position[1] == y+1) or (state.position[1] == y-1)) and state.position[0]==x:
                 return True
         return False
 
-    def getPriority(self, pos1, pos2)
+    def getPriority(self, x):
+        return self.getDistance(x.position, x.parent.position)
+
+    def getDistance(self, pos1, pos2):
         return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+
+    def getSuccessors(self, state):
+        pass
