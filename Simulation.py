@@ -120,9 +120,9 @@ class Simulation(object):
 
     def testGoal(self)
         for i in self.positionsToVisit:
-            if (position[0] == self.collector.position[0] + 1) or (position[0] == self.collector.position[0] - 1):
+            if (position[0] == self.collector.state.position[0] + 1) or (position[0] == self.collector.state.position[0] - 1):
                 return True
-            if (position[1] == self.collector.position[1] + 1) or (position[0] == self.collector.position[1] - 1):
+            if (position[1] == self.collector.state.position[1] + 1) or (position[0] == self.collector.state.position[1] - 1):
                 return True
         return False
 
