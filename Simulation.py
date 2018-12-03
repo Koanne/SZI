@@ -125,3 +125,6 @@ class Simulation(object):
             if (position[1] == self.collector.position[1] + 1) or (position[0] == self.collector.position[1] - 1):
                 return True
         return False
+
+    def getPriority(self, pos1, pos2)
+        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos[2])
