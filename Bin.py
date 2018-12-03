@@ -11,5 +11,5 @@ class Bin(MapElement):
     def action(self):
         pass
 
-    def display(self):
-        pass
+    def isPassable(self):
+        return False
