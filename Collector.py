@@ -37,4 +37,9 @@ class Collector(MapElement):
             self.state.position[0] += -1
     
     def doAction(self, action):
-        pass
+        if action=='goAhead':
+            self.goAhead()
+        elif action=='turnLeft':
+            self.turnLeft()
+        elif action=="turnRight":
+            self.turnRight()

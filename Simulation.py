@@ -19,8 +19,23 @@ class Simulation(object):
                 return False
         return True
 
-    def returnElementAhead(self):
-        pass
+    def returnElementAhead(self, state):
+        if state.rotation==0:
+            for i in self.mapElements:
+                if state.position[0]==i.position[0] and state.position[1]+1==i.position[1]:
+                    return i
+        elif state.rotation==1:
+            for i in self.mapElements:
+                if state.position[1]==i.position[1] and state.position[0]+1==i.position[0]:
+                    return i
+        elif state.rotation==2:
+            for i in self.mapElements:
+                if state.position[0]==i.position[0] and state.position[1]-1==i.position[1]:
+                    return i
+        elif state.rotation==3:
+            for i in self.mapElements:
+                if state.position[1]==i.position[1] and state.position[0]-1==i.position[0]:
+                    return i
 
 ##################################################################### GENEROWANIE MAPY
     def __init__(self, binsAmount):
@@ -31,7 +46,7 @@ class Simulation(object):
         self.canvas = Canvas(self.window, width = self.fieldSize*self.gridWidth, height = self.fieldSize*self.gridHeight)
         self.binsAmount = binsAmount
         self.window.title("Simulation")
-        self.collector = Collector(1, 1, 2)
+        self.collector = Collector(1, 1, 1)
         self.positionsToVisit = []
         self.fringeBins = []
         self.mapElements = []
@@ -107,12 +122,20 @@ class Simulation(object):
 
     def start(self):
         while True:
-            self.moveCollector()
+            self.update()
+            self.collector.turnLeft()
+        #actions = self.graphSearch()
+        #for i in actions:
+        #   self.update()
+        #   self.collector.turnLeft()
 
 ##################################################################### RUCH AGENTA
-    def moveCollector(self):
-        self.update()
-        self.collector.turnLeft()
+    def stateValueExists(self, state, states):
+        for i in states:
+            if i.rotation==state.rotation and i.position==state.position:
+                return True
+            else:
+                return False
 
     def graphSearch(self):
         actions = []
@@ -124,21 +147,33 @@ class Simulation(object):
 
         while not self.testGoal(currentState):
             currentState = fringe.delete()
+            #print(str(currentState.position) +" "+ str(currentState.rotation))
+            time.sleep(4)
+
             if self.testGoal(currentState):
+                for i in explored:
+                    actions+= i.action
+                    #print(i.action)
                 return actions
+
             explored.append(currentState)
-            for (action, nextState) in self.getSuccessors(currentState):
-                x = nextState
-                x.action = action
+            for j in self.getSuccessors(currentState):
+                x = j[1]
+                x.action = j[0]
                 x.parent = currentState
                 x.priority = self.getPriority(x)
 
-                if x.state not in explored and x.state not in fringe.queue:
+                if self.stateValueExists(x, explored) and not self.stateValueExists(x, fringe.queue):
                     fringe.insert(x)
-                elif x in fringe.queue:
-                    pass
-        pass
-
+                elif self.stateValueExists(x, fringe.queue):
+                    for i in fringe.queue:
+                        if x.position==i.position and x.rotation==i.rotation and x.priority<i.priority:
+                            i = x
+            
+            if self.testGoal(currentState):
+                for i in explored:
+                    actions+= i.action
+                return actions
 #####################################################################
 
     def testGoal(self, state):
@@ -156,4 +191,22 @@ class Simulation(object):
         return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 
     def getSuccessors(self, state):
-        pass
+        succ = []
+        if self.returnElementAhead(state).isPassable():
+            astate = state
+            if astate.rotation==0:
+                astate.position[1] += -1
+            elif astate.rotation==1:
+                astate.position[0] += 1
+            elif astate.rotation==2:
+                astate.position[1] += 1
+            else:
+                astate.position[0] += -1
+            succ.append(['goAhead', state])
+        lstate = state
+        lstate.rotation = (lstate.rotation-1+4)%4
+        succ.append(['turnLeft', lstate])
+        rstate = state
+        rstate.rotation = (rstate.rotation+1)%4
+        succ.append(['turnRight', rstate])
+        return succ
