@@ -9,6 +9,7 @@ from Bin import Bin
 from State import State
 import time
 import copy
+import math
 from PriorityQueue import PriorityQueue
 
 class Simulation(object):
@@ -20,17 +21,24 @@ class Simulation(object):
         else:
             return True
         
-    
     def checkIfPositionIsEmpty(self, position):
         for i in self.mapElements:
             if i.position == position:
                 return False
         return True
 
+    def stateValueExists(self, state, states):
+        found = False
+        for i in states:
+            if str(str(i.position)+str(i.rotation))==str(str(state.position)+str(state.rotation)) :
+                found = True
+                break
+        return found
+
     def returnElementAhead(self, state):
         if state.rotation==0:
             for i in self.mapElements:
-                if state.position[0]==i.position[0] and state.position[1]+1==i.position[1]:
+                if state.position[0]==i.position[0] and state.position[1]-1==i.position[1]:
                     return i
         elif state.rotation==1:
             for i in self.mapElements:
@@ -38,7 +46,7 @@ class Simulation(object):
                     return i
         elif state.rotation==2:
             for i in self.mapElements:
-                if state.position[0]==i.position[0] and state.position[1]-1==i.position[1]:
+                if state.position[0]==i.position[0] and state.position[1]+1==i.position[1]:
                     return i
         elif state.rotation==3:
             for i in self.mapElements:
@@ -55,7 +63,7 @@ class Simulation(object):
         self.binsAmount = binsAmount
         self.window.title("Simulation")
         self.collector = Collector(1, 1, 1)
-        self.positionToVisit = []
+        self.positionToVisit = [3,4]
         self.mapElements = []
         self.addDumps()
         self.addRoads()
@@ -101,9 +109,6 @@ class Simulation(object):
                 if self.checkIfPositionIsEmpty([x,y]):
                     rightPosition = True
             element = Bin(x, y)
-            if i==0:
-                self.positionToVisit.append(x)
-                self.positionToVisit.append(y)
             self.mapElements.append(element)
 
     def addGrass(self):
@@ -131,8 +136,7 @@ class Simulation(object):
 
     def start(self):
         #while True:
-            #self.update()
-            #self.collector.turnLeft()
+        self.update()
         actions = self.graphSearch()
         #print(str(actions))
         for i in actions:
@@ -142,17 +146,9 @@ class Simulation(object):
             
 
 ##################################################################### RUCH AGENTA
-    def stateValueExists(self, state, states):
-        found = False
-        for i in states:
-            if str(str(i.position)+str(i.rotation))==str(str(state.position)+str(state.rotation)) :
-                found = True
-                break
-        return found
-
     def graphSearch(self):
         print(str(self.positionToVisit))
-        time.sleep(10)
+        # time.sleep(10)
         actions = []
         explored = []
         currentState =  copy.deepcopy(self.collector.state)
@@ -161,7 +157,7 @@ class Simulation(object):
         fringe.insert(currentState)
 
         while not self.testGoal(currentState):
-            currentState = fringe.delete()
+            currentState = fringe.delete(currentState)
             print("Zmieniamy obecny stan")
             print(str(currentState.position), str(currentState.rotation))
 
@@ -178,7 +174,7 @@ class Simulation(object):
                 print("Sprawdzam dany następnik:")
                 x = copy.deepcopy(j[1])
                 x.action = j[0]
-                x.parent = currentState
+                x.parent = copy.deepcopy(currentState)
                 x.priority = self.getPriority(x)
                 print(str(x.position), str(x.rotation))
                 if not self.stateValueExists(x, explored) and not self.stateValueExists(x, fringe.queue):
@@ -190,8 +186,8 @@ class Simulation(object):
                         if x.position==i.position and x.rotation==i.rotation and x.priority<i.priority:
                             i = copy.deepcopy(x)
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            time.sleep(1)
-#####################################################################
+            # time.sleep(5)
+##################################################################### 
 
     def testGoal(self, state):
         #for [x,y] in self.positionsToVisit:
@@ -203,11 +199,21 @@ class Simulation(object):
             return True
         return False
 
-    def getPriority(self, x):
-        return self.getDistance(x.position, self.positionToVisit)
+    def getPriority(self, s):
+        [x,y] = s.position
+        r = s.rotation
+        if r == 0:
+            y -= 1
+        elif r == 1:
+            x +=1
+        elif r == 2:
+            y += 1
+        elif r == 3:
+            x -= 1
+        return self.getDistance([x,y], self.positionToVisit)
 
     def getDistance(self, pos1, pos2):
-        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+        return math.sqrt(abs(pos1[0] - pos2[0])**2 + abs(pos1[1] - pos2[1])**2)
 
     def getSuccessors(self, state):
         succ = []
