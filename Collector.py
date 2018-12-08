@@ -5,7 +5,7 @@ from State import State
 class Collector(MapElement):
 
     def __init__(self, x, y, rotation):
-        self.image = PhotoImage(file='collector2.png')
+        self.image = PhotoImage(file='collector1.png')
         self.maxCapacity = 10
         self.paperAmount = 0
         self.glassAmount = 0
@@ -37,9 +37,9 @@ class Collector(MapElement):
             self.state.position[0] += -1
     
     def doAction(self, action):
-        if action=='goAhead':
+        if action=="goAhead":
             self.goAhead()
-        elif action=='turnLeft':
+        elif action=="turnLeft":
             self.turnLeft()
         elif action=="turnRight":
             self.turnRight()
