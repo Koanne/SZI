@@ -11,4 +11,7 @@ class Grass(MapElement):
         pass
     
     def isPassable(self):
-        return False
+        return True
+
+    def getCost(self):
+        return 2

@@ -12,3 +12,6 @@ class Road(MapElement):
 
     def isPassable(self):
         return True
+
+    def getCost(self):
+        return 1
