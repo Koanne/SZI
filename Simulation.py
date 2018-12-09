@@ -109,7 +109,7 @@ class Simulation(object):
                     zz.searching = True
                     zz.updateImage()
             self.update()
-            actions = self.MovementLogic.graphSearch(self.collector.state, p)
+            actions = self.MovementLogic.getActions(self.collector.state, p)
             for i in actions:
                 print(i)
                 self.update()

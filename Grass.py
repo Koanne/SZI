@@ -14,4 +14,4 @@ class Grass(MapElement):
         return True
 
     def getCost(self):
-        return 2
+        return 3

@@ -41,8 +41,9 @@ class MovementLogic(object):
                 if state.position[1]==i.position[1] and state.position[0]-1==i.position[0]:
                     return i
     
-    def graphSearch(self, start, final):
-        print(str(final))
+    def getActions(self, start, final):
+        print("*****************************************************************************************************")
+        print("Cel: "+str(final))
         actions = []
         explored = []
         currentState =  start
@@ -68,7 +69,7 @@ class MovementLogic(object):
                 x.action = j[0]
                 x.parent = copy.deepcopy(currentState)
                 x.priority = self.getPriority(x, final)
-                print(str(x.position), str(x.rotation), str(x.priority))
+                print(str(x.position), str(x.rotation), "priorytet: ", str(x.priority))
                 if not self.stateValueExists(x, explored) and not self.stateValueExists(x, fringe.queue):
                     fringe.insert(x)
                     print("Dodano następnik, nie było go ani we fringe ani w explored")
@@ -77,7 +78,7 @@ class MovementLogic(object):
                     for i in fringe.queue:
                         if x.position==i.position and x.rotation==i.rotation and x.priority<i.priority:
                             i = copy.deepcopy(x)
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
     def testGoal(self, state, p):
         x = p[0]
@@ -88,31 +89,33 @@ class MovementLogic(object):
             return True
         return False
 
-    def getPriority(self, s, p):
-        [x,y] = s.position
-        r = s.rotation
-        b = 0
-        cost = 1
+    ################################# metoda do zmiany?
+    # problemem jest sytuacja, gdy collectorowi nie opłaca się jechać prosto i musi skręcić
+    # wtedy oba skręty mają ten sam priorytet, a nie powinny
+    # i to jest chyba w sumie tylko do zmiany?
+    def getPriority(self, s, finalPosition):
+        # [x,y] = s.position
+        # r = s.rotation
+        # b = 0
 
-        if r == 0:
-            y -= 1
-        elif r == 1:
-            x +=1
-        elif r == 2:
-            y += 1
-        elif r == 3:
-            x -= 1
+        # if r == 0:
+        #     y -= 1
+        # elif r == 1:
+        #     x +=1
+        # elif r == 2:
+        #     y += 1
+        # elif r == 3:
+        #     x -= 1
 
-        if self.returnElementAhead(s) is not None:
-             if self.returnElementAhead(s).isPassable():
-                 b = 20
-                 #cost = self.returnElementAhead(s).getCost()
+        # if self.returnElementAhead(s) is not None:
+        #      if self.returnElementAhead(s).isPassable():
+        #          b = 100
+        return self.getDistance(s.position, finalPosition) + self.getPathCost(s)  #<- tylko to powinno tu zostać
+        # return self.getDistance([x,y], finalPosition) - b + cost
 
-        return self.getDistance([x,y], p) - b + cost
-
+    # funkcja h(n)
     def getDistance(self, pos1, pos2):
-        return math.sqrt(abs(pos1[0] - pos2[0])**2 + abs(pos1[1] - pos2[1])**2)
-        #return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+        return abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 
     def getSuccessors(self, state):
         succ = []
@@ -127,15 +130,33 @@ class MovementLogic(object):
                     astate.position[1] += 1
                 else:
                     astate.position[0] += -1
+                astate.cost=self.returnElementAhead(state).getCost()
                 if self.checkIfPositionIsCorrect(astate.position):
                     succ.append(["goAhead", astate])
         lstate = copy.deepcopy(state)
         lstate.rotation = (lstate.rotation-1+4)%4
+        lstate.cost = 1
         succ.append(["turnLeft", lstate])
         rstate = copy.deepcopy(state)
         rstate.rotation = (rstate.rotation+1)%4
+        rstate.cost = 1
         succ.append(["turnRight", rstate])
         return succ
+
+    ################################# metoda do zmiany?
+    def getPathCost(self, currentState):
+        # na razie zwraca faktyczny koszt ścieżki przebytej od startu do currentState
+        # ale może powinna zwracać coś innego XD
+        # albo po prostu źle liczy XD
+        # to jest ta funkcja g(n) jakby co
+        state = copy.copy(currentState)
+        cost = 0
+        while state.parent is not None:
+            cost += state.cost
+            state = state.parent
+        return cost
+
+
 
 
     

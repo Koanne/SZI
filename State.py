@@ -4,3 +4,5 @@ class State(object):
         self.position = [x, y]
         self.rotation = rotation
         self.action=""
+        self.parent = None
+        self.cost = 0

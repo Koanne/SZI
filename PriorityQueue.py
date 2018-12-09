@@ -3,46 +3,49 @@ import copy
 
 # A simple implementation of Priority Queue
 # using Queue.
+
+#################################### tu są na razie różne okropne rzeczy w komentarzach, trzeba je potem wywalić żeby została sama kolejka
+
 class PriorityQueue(object):
-    def returnElementAhead(self, state, elements):
-        if state.rotation==0:
-            for i in elements:
-                if state.position[0]==i.position[0] and state.position[1]-1==i.position[1]:
-                    return i
-        elif state.rotation==1:
-            for i in elements:
-                if state.position[1]==i.position[1] and state.position[0]+1==i.position[0]:
-                    return i
-        elif state.rotation==2:
-            for i in elements:
-                if state.position[0]==i.position[0] and state.position[1]+1==i.position[1]:
-                    return i
-        elif state.rotation==3:
-            for i in elements:
-                if state.position[1]==i.position[1] and state.position[0]-1==i.position[0]:
-                    return i
-    def getSuccessors(self, state, elements):
-        succ = []
-        if self.returnElementAhead(state, elements) is not None:
-            if self.returnElementAhead(state, elements).isPassable():
-                astate = copy.deepcopy(state)
-                if astate.rotation==0:
-                    astate.position[1] += -1
-                elif astate.rotation==1:
-                    astate.position[0] += 1
-                elif astate.rotation==2:
-                    astate.position[1] += 1
-                else:
-                    astate.position[0] += -1
-                if True:
-                    succ.append(["goAhead", astate])
-        lstate = copy.deepcopy(state)
-        lstate.rotation = (lstate.rotation-1+4)%4
-        succ.append(["turnLeft", lstate])
-        rstate = copy.deepcopy(state)
-        rstate.rotation = (rstate.rotation+1)%4
-        succ.append(["turnRight", rstate])
-        return succ
+    # def returnElementAhead(self, state, elements):
+    #     if state.rotation==0:
+    #         for i in elements:
+    #             if state.position[0]==i.position[0] and state.position[1]-1==i.position[1]:
+    #                 return i
+    #     elif state.rotation==1:
+    #         for i in elements:
+    #             if state.position[1]==i.position[1] and state.position[0]+1==i.position[0]:
+    #                 return i
+    #     elif state.rotation==2:
+    #         for i in elements:
+    #             if state.position[0]==i.position[0] and state.position[1]+1==i.position[1]:
+    #                 return i
+    #     elif state.rotation==3:
+    #         for i in elements:
+    #             if state.position[1]==i.position[1] and state.position[0]-1==i.position[0]:
+    #                 return i
+    # def getSuccessors(self, state, elements):
+    #     succ = []
+    #     if self.returnElementAhead(state, elements) is not None:
+    #         if self.returnElementAhead(state, elements).isPassable():
+    #             astate = copy.deepcopy(state)
+    #             if astate.rotation==0:
+    #                 astate.position[1] += -1
+    #             elif astate.rotation==1:
+    #                 astate.position[0] += 1
+    #             elif astate.rotation==2:
+    #                 astate.position[1] += 1
+    #             else:
+    #                 astate.position[0] += -1
+    #             if True:
+    #                 succ.append(["goAhead", astate])
+    #     lstate = copy.deepcopy(state)
+    #     lstate.rotation = (lstate.rotation-1+4)%4
+    #     succ.append(["turnLeft", lstate])
+    #     rstate = copy.deepcopy(state)
+    #     rstate.rotation = (rstate.rotation+1)%4
+    #     succ.append(["turnRight", rstate])
+    #     return succ
 
     def __init__(self):
         self.queue = []
@@ -70,28 +73,22 @@ class PriorityQueue(object):
 			#min = newq[0]
     		min = self.queue[0]
     		for s in self.queue:
-    			q = []
-    			for [action, st] in self.getSuccessors(state, elements):
-    				q.append(st)
-    			if (s.priority < min.priority) and self.stateValueExists(s, q): 
+    			# q = []
+    			# for [action, st] in self.getSuccessors(state, elements):
+    			# 	q.append(st)
+    			if (s.priority < min.priority): # and self.stateValueExists(s, q): 
     				min = s
     		item = min
     		self.queue.remove(item)
-    	#max = 0
-    	# for i in range(len(self.queue)):
-    	# 	if self.queue[i].priority < self.queue[max].priority:
-		# 		max = i
-		# item = self.queue[max]
-		# del self.queue[max]
     		return item
     	except IndexError:
     		print()
     		exit()
 
-    def stateValueExists(self, state, states):
-        found = False
-        for i in states:
-            if str(str(i.position)+str(i.rotation))==str(str(state.position)+str(state.rotation)) :
-                found = True
-                break
-        return found
+    # def stateValueExists(self, state, states):
+    #     found = False
+    #     for i in states:
+    #         if str(str(i.position)+str(i.rotation))==str(str(state.position)+str(state.rotation)) :
+    #             found = True
+    #             break
+    #     return found
