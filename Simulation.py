@@ -100,7 +100,7 @@ class Simulation(object):
         self.display()
         self.window.update_idletasks()
         self.window.update()
-        time.sleep(1)
+        time.sleep(0.5)
 
     def start(self):
         for p in self.positionsToVisit:
@@ -110,10 +110,11 @@ class Simulation(object):
                     zz.updateImage()
             self.update()
             actions = self.MovementLogic.getActions(self.collector.state, p)
-            for i in actions:
-                print(i)
-                self.update()
-                self.collector.doAction(i)
+            if actions is not None:
+                for i in actions:
+                    print(i)
+                    self.update()
+                    self.collector.doAction(i)
             for zz in self.mapElements:
                 if zz.position == p:
                     zz.searching = False
