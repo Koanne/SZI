@@ -10,4 +10,3 @@ class Example(object):
                 self.decision=value
             else:
                 self.attributes[attr]=value
-    
