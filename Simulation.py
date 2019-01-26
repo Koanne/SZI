@@ -8,10 +8,14 @@ from Dump import Dump
 from Bin import Bin
 from State import State
 from MovementLogic import MovementLogic
+from GarbageClassifier import GarbageClassifier
+from ImageExample import ImageExample
+from Example import Example
 import time
 import copy
 import math
 from PriorityQueue import PriorityQueue
+from PIL import ImageTk, Image
 
 class Simulation(object):
       
@@ -37,6 +41,7 @@ class Simulation(object):
         self.addBins()
         self.addGrass()
         self.MovementLogic = MovementLogic(self.mapElements, self.gridWidth, self.gridHeight)
+        self.classifier = GarbageClassifier("learningExamples.txt")
 
     def addDumps(self):
         types = ['plastic', 'paper', 'glass', 'other']
@@ -102,6 +107,24 @@ class Simulation(object):
         self.window.update()
         time.sleep(0.5)
 
+    def classify(self):
+        for i in range (0,5):
+            r = randint(1,40)
+            name = "./photos/test/test"+str(r)+".jpg"
+            im = ImageExample(name)
+            image = ImageTk.PhotoImage(Image.open(name))
+            result = self.classifier.test(im.getString())
+            self.canvas.create_image(350, 100, image=image, anchor=NW)
+            self.canvas.pack()
+            self.window.update_idletasks()
+            self.window.update()
+            time.sleep(0.5)
+            self.canvas.create_text(420,150,fill="black",font="Times 20",text=result)
+            self.canvas.pack()
+            self.window.update_idletasks()
+            self.window.update()
+            time.sleep(2)
+
     def start(self):
         for p in self.positionsToVisit:
             for zz in self.mapElements:
@@ -109,12 +132,15 @@ class Simulation(object):
                     zz.searching = True
                     zz.updateImage()
             self.update()
+            
             actions = self.MovementLogic.getActions(self.collector.state, p)
             if actions is not None:
                 for i in actions:
                     print(i)
                     self.update()
                     self.collector.doAction(i)
+            self.update()
+            self.classify()
             for zz in self.mapElements:
                 if zz.position == p:
                     zz.searching = False

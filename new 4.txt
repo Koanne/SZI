@@ -1,0 +1,24 @@
+plastik: butelka, kanister, opakowanie, koło, przezroczysty(szary/niebieski)
+szkło: brązowy, zielony, przezroczysty, butelka, szkło, kieliszek
+papier: linie proste? biały, różne kolory, prostokąty
+
+
+Atrybuty
+redukcja do 16 kolorów?
+- biały
+- szaroniebieski
+- czarny
+- czerwony
+- zielony
+- niebieski
+- ciemnobrązowy
+- jasnobrązowy
+- żółty
+- różowy
+
+
+
+
+GarbageClassifier (buildTree, examples[], attributes[], test(example), makeExamples(), getExampleFromImage(), colors[], transformImage(), countPixels(color))
+Tree
+Example (Atr1, Atr2)
