@@ -16,9 +16,11 @@ import copy
 import math
 from PriorityQueue import PriorityQueue
 from PIL import ImageTk, Image
+import tensorflow as tf
+import numpy as np
 
 class Simulation(object):
-      
+
     def checkIfPositionIsEmpty(self, position):
         for i in self.mapElements:
             if i.position == position:
@@ -125,6 +127,24 @@ class Simulation(object):
             self.window.update()
             time.sleep(2)
 
+    def predictDigits(self):
+        sess = tf.Session()
+
+        saver = tf.train.import_meta_graph('./src/model/my-model.meta')
+        saver.restore(sess,tf.train.latest_checkpoint('./model'))
+        print("Model został wczytany.")
+
+        graph = tf.get_default_graph()
+        output_layer = graph.get_tensor_by_name("output:0")
+        X = graph.get_tensor_by_name("X:0")
+
+        r = randint(0,9);
+        img = np.invert(Image.open("../test_digits/house_test_" + str(r) + ".png"))
+
+        prediction = sess.run(tf.argmax(output_layer,1), feed_dict={X: [img]})
+        print ("Rozpoznanie dla testowanego obrazka:", np.squeeze(prediction))
+
+
     def start(self):
         for p in self.positionsToVisit:
             for zz in self.mapElements:
@@ -132,7 +152,7 @@ class Simulation(object):
                     zz.searching = True
                     zz.updateImage()
             self.update()
-            
+
             actions = self.MovementLogic.getActions(self.collector.state, p)
             if actions is not None:
                 for i in actions:
@@ -140,6 +160,7 @@ class Simulation(object):
                     self.update()
                     self.collector.doAction(i)
             self.update()
+            self.predictDigits()
             self.classify()
             for zz in self.mapElements:
                 if zz.position == p:
